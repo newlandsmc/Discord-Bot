@@ -93,7 +93,7 @@ public class RoleManager extends ListenerAdapter {
         if (ROLE_CONFIG.exists()) {
             String json = new String(Files.readAllBytes(ROLE_CONFIG.toPath()));
             JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
-            if (!obj.has("channel") && !obj.has("message") && !obj.has("roles")) {
+            if (!obj.has("channel") && !obj.has("roles")) {
                 System.out.println("Invalid roles.json file!");
                 return;
             }
