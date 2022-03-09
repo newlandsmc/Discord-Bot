@@ -10,14 +10,14 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
 public class TestCommand {
-    @Command(name = "test", description = "Test Command 1",serverOnly = true)
+    @Command(name = "test", description = "Test Command 1",serverOnly = true, botOwnerOnly = true)
     public CommandResult test(@Sender Member member, MessageChannel channel, CommandContext ctx, boolean test) {
         System.out.println("Test Command 0");
         ctx.reply("Working...");
         SVDiscord.getJda().retrieveCommands().queue(commands -> {
-            commands.forEach(command -> {
-                command.delete().queue();
-            });
+            commands.forEach(command -> command.delete().queue(c -> {
+                System.out.println("Deleted command: " + command);
+            }));
             ctx.reply("done");
         });
         return CommandResult.SUCCESS;
