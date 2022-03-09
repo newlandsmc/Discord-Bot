@@ -12,11 +12,11 @@ configure the `rolesmessage` file.
 
 ## Commands
 
-| Command        | Descrption                    | Permission       | Usage                                             |
-|----------------|-------------------------------|------------------|---------------------------------------------------|
-| /ban           | Ban a member permanently      | BAN_MEMBERS      | /ban <user> <reason>                              |
-| /tempban       | Temporarily ban a member      | BAN_MEMBERS      | /tempban <user> <reason> [days] [hours] [minutes] |
-| /mute /timeout | Mute a user                   | MODERATE_MEMBERS | /mute <user> <reason> [days] [hours] [minutes]    |
-| /kick          | Kick a user                   | KICK_MEMBERS     | /kick <user> <reason>                             |
-| /purge /prune  | Remove previous X messages    | MANAGE_SERVER    | /purge <number of messages>                       |
-| /reload        | Reload all modules of the bot | ADMINISTRATOR    | /reload                                           |
+| Command        | Descrption                    | Permission       | Usage                                              |
+|----------------|-------------------------------|------------------|----------------------------------------------------|
+| /ban           | Ban a member permanently      | BAN_MEMBERS      | /ban \<user> <reason>                              |
+| /tempban       | Temporarily ban a member      | BAN_MEMBERS      | /tempban \<user> <reason> [days] [hours] [minutes] |
+| /mute /timeout | Mute a user                   | MODERATE_MEMBERS | /mute \<user> <reason> [days] [hours] [minutes]    |
+| /kick          | Kick a user                   | KICK_MEMBERS     | /kick \<user> <reason>                             |
+| /purge /prune  | Remove previous X messages    | MANAGE_SERVER    | /purge \<number of messages>                       |
+| /reload        | Reload all modules of the bot | ADMINISTRATOR    | /reload                                            |
