@@ -1,0 +1,21 @@
+{
+  "channel": "950800420748542062",
+  "roles": [
+    {
+      "name": "Test Role",
+      "buttonText": "Test1",
+      "buttonColor": "blue",
+      "description": "This is a test role",
+      "roleId": "950796199013802054",
+      "guildId": "950472276887867495"
+    },
+    {
+      "name": "Test Role 2",
+      "buttonText": "Test2",
+      "buttonColor": "green",
+      "description": "This is a test role",
+      "roleId": "950796463250759771",
+      "guildId": "950472276887867495"
+    }
+  ]
+}

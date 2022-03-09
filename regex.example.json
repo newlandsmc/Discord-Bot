@@ -1,0 +1,36 @@
+[
+  {
+    "pattern": "(blocked1|blocked2)",
+    "actions": [
+      {
+        "action": "delete"
+      },
+      {
+        "action": "mute",
+        "duration": "PT15M", // Duration parsed from https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html#parse-java.lang.CharSequence-
+        "reason": "Inappropriate messages"
+      },
+      {
+        "action": "ban", // perm ban
+        "reason": "Inappropriate messages"
+      },
+      {
+        "action": "ban",
+        "reason": "Inappropriate messages",
+        "duration": "PT30M" // Duration parsed from https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html#parse-java.lang.CharSequence-
+      },
+      {
+        "action": "kick",
+        "reason": "Inappropriate messages"
+      }
+    ]
+  },
+  {
+    "pattern": "another_pattern_here",
+    "actions": [
+      {
+        "action": "delete"
+      }
+    ]
+  }
+]
