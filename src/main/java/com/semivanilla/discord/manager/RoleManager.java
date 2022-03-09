@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
@@ -28,7 +27,7 @@ import java.util.List;
 
 public class RoleManager extends ListenerAdapter {
     private static final File ROLE_CONFIG = new File("roles.json"),
-                              ROLE_MESSAGE = new File("rolesmessage");
+            ROLE_MESSAGE = new File("rolesmessage");
     private static ArrayList<RoleInfo> roles = new ArrayList<>();
     private static TextChannel channel;
     private static String messageId;
@@ -47,7 +46,7 @@ public class RoleManager extends ListenerAdapter {
                 String roleId = id.substring(5);
                 RoleInfo role = roles.stream().filter(r -> r.getRoleId().equals(roleId)).findFirst().orElse(null);
                 if (role != null) {
-                    role.toggle(event.getMember(),event);
+                    role.toggle(event.getMember(), event);
                 }
             }
         }
@@ -56,7 +55,7 @@ public class RoleManager extends ListenerAdapter {
     public static void sendMessage() {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Roles");
-        builder.setColor(Color.YELLOW);
+        builder.setColor(new Color(54,57,63));
         builder.setDescription("Click on the role to assign it to yourself!");
         List<ItemComponent> components = new ArrayList<>();
         for (RoleInfo role : roles) {
