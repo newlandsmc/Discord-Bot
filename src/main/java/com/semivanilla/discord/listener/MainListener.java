@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.GuildUnbanEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -34,6 +35,12 @@ public class MainListener extends ListenerAdapter {
             if (cmd.equalsIgnoreCase("roles") && event.getMessage().getMember().hasPermission(Permission.MANAGE_ROLES))
                 RoleManager.sendMessage();
         }
+        RegexFilterManager.process(event.getMessage(), event.getMember());
+    }
+
+    @Override
+    public void onMessageUpdate(@NotNull MessageUpdateEvent event) {
+        super.onMessageUpdate(event);
         RegexFilterManager.process(event.getMessage(), event.getMember());
     }
 
