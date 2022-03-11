@@ -120,7 +120,7 @@ public class ModerationManager {
     public static void delete(Message message) {
         message.delete().queue();
         try {
-            auditLog("Message Deleted", message.getAuthor(), "Inappropriate", "", "");
+            auditLog("Message Deleted", message.getAuthor(), "Prohibited Language\n\n**Message**\n||" + message.getContentDisplay() + "||", "", "");
         } catch (Exception e) {
             error(e, message.getMember(), "delete");
             e.printStackTrace();

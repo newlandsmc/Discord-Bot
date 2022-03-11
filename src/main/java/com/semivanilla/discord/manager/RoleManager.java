@@ -55,7 +55,7 @@ public class RoleManager extends ListenerAdapter {
     public static void sendMessage() {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Roles");
-        builder.setColor(new Color(54,57,63));
+        builder.setColor(new Color(41,43,47));
         builder.setDescription("Click on the role to assign it to yourself!");
         List<ItemComponent> components = new ArrayList<>();
         for (RoleInfo role : roles) {
