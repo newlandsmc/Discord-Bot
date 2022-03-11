@@ -1,0 +1,25 @@
+{
+  "support-channel": "952982520847273996",
+  "support-category": "952993943677714542",
+  "guild-id": "952331093049245756",
+  "tickettypes": [
+    {
+      "id": "help",
+      "name": "Help",
+      "description": "Help",
+      "message": "Hello %user%! Please describe your problem in detail so we can help you as soon as possible."
+    },
+    {
+      "id": "bug",
+      "name": "Bug",
+      "description": "Bug",
+      "message": "Hello %user%! Please provide the following so we can reproduce the bug:\n\n**Steps to reproduce the bug**\n**Expected result**\n**Actual result**\n**Your In Game Name**\n**Which server you are playing on (Khavalon/Asthonia)**"
+    },
+    {
+      "id": "suggestion",
+      "name": "Suggestion",
+      "description": "Suggestion",
+      "message": "Hello %user%! Please describe your suggestion in detail!"
+    }
+  ]
+}

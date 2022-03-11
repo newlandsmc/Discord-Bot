@@ -19,11 +19,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ModerationManager {
+    private static final File FILE = new File("bans.json");
     @Getter
     private static MessageChannel auditLogChannel;
     @Getter
     private static HashMap<String, String> bans = new HashMap<>();
-    private static final File FILE = new File("bans.json");
 
     @SneakyThrows
     public static void init() {
@@ -54,13 +54,13 @@ public class ModerationManager {
                                 iterator.remove();
                                 SVDiscord.getJda().getGuildById(guildId).unban(userId).queue((c) -> {
                                     System.out.println("Successfully unbanned " + userId);
-                                    SVDiscord.getJda().retrieveUserById(userId).queue(user ->{
+                                    SVDiscord.getJda().retrieveUserById(userId).queue(user -> {
                                         String username;
                                         if (user == null) {
                                             username = "<@" + userId + ">";
                                         } else username = user.getAsTag();
                                         auditLog("Unban", null, "Ban Expired\n\n**User**\n" + username, "", "");
-                                    }, e-> error(e,userId,"Unban"));
+                                    }, e -> error(e, userId, "Unban"));
                                 }, e -> {
                                     System.err.println("Failed to unban " + userId + "\n" + e.getMessage());
                                     error(e, "<@" + userId + "> (" + userId + ")", "Unban");
@@ -120,7 +120,7 @@ public class ModerationManager {
     public static void delete(Message message) {
         message.delete().queue();
         try {
-            auditLog("Message Deleted", message.getAuthor(), "Inappropriate", "", "");
+            auditLog("Message Deleted", message.getAuthor(), "Prohibited Language\n\n**Message**\n||" + message.getContentDisplay() + "||", "", "");
         } catch (Exception e) {
             error(e, message.getMember(), "delete");
             e.printStackTrace();

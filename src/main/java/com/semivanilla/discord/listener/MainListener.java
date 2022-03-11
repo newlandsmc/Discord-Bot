@@ -1,14 +1,18 @@
 package com.semivanilla.discord.listener;
 
+import com.semivanilla.discord.SVDiscord;
 import com.semivanilla.discord.manager.ModerationManager;
 import com.semivanilla.discord.manager.RegexFilterManager;
 import com.semivanilla.discord.manager.RoleManager;
+import com.semivanilla.discord.manager.TicketManager;
+import com.semivanilla.discord.object.TicketConfig;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.GuildUnbanEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +37,9 @@ public class MainListener extends ListenerAdapter {
             String cmd = event.getMessage().getContentDisplay().substring(1);
             if (cmd.equalsIgnoreCase("roles") && event.getMessage().getMember().hasPermission(Permission.MANAGE_ROLES))
                 RoleManager.sendMessage();
+            else if (cmd.equalsIgnoreCase("tickets") && event.getMessage().getMember().hasPermission(Permission.MANAGE_SERVER)) {
+                TicketManager.sendMessage();
+            }
         }
         RegexFilterManager.process(event.getMessage(), event.getMember());
     }
@@ -63,6 +70,36 @@ public class MainListener extends ListenerAdapter {
                 case "delete":
                     event.getHook().deleteOriginal().queue();
             }
+        } else if (s.startsWith("ticket:")) {
+            String[] id = s.split(":");
+            String action = id[1];
+            switch (action.toLowerCase()) {
+                case "close":
+                    String a = id[2];
+                    String[] a1 = a.split("\\|");
+                    String member = a1[0],
+                            configId = a1[1];
+                    TicketConfig conf = TicketManager.getConfigById(configId);
+                    if (conf == null) {
+                        event.reply("Failed to close ticket: `Could not find ticket config with the id of " + configId + "`").setEphemeral(true).queue();
+                        break;
+                    }
+                    SVDiscord.getJda().retrieveUserById(member).queue(user -> {
+                        event.reply("Closing ticket... Please wait as I generate a transcript...").setEphemeral(true).queue();
+                        conf.close(user, event.getUser(), event.getTextChannel());
+                    });
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onSelectMenuInteraction(@NotNull SelectMenuInteractionEvent event) {
+        super.onSelectMenuInteraction(event);
+        String s = event.getComponentId();
+        System.out.println("[select] " + s);
+        if (s.startsWith("ticket:")) {
+            TicketManager.onSelectMenu(event);
         }
     }
 }

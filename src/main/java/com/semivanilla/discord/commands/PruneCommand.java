@@ -20,7 +20,7 @@ public class PruneCommand {
         String userId = ctx.getMember().getId();
         ctx.getEvent().getHook().editOriginalEmbeds(eb.build())
                 .setActionRow(
-                        Button.secondary( "prune:" + userId + ":delete", "No"),
+                        Button.secondary("prune:" + userId + ":delete", "No"),
                         Button.danger("prune:" + userId + ":prune:" + amount, "Yes"))
                 .queue();
     }

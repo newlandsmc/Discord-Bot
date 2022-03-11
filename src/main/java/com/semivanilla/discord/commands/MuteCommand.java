@@ -21,7 +21,8 @@ public class MuteCommand {
         ModerationManager.timeout(member, reason, duration, ctx.getMember().getUser().getAsTag());
         ctx.reply("Muted " + member.getUser().getAsTag() + " for `" + reason + "` duration: " + ModerationManager.humanReadableFormat(duration));
     }
-    @Command(name = "unmute",description = "Unmute a user", serverOnly = true, permission = Permission.MODERATE_MEMBERS)
+
+    @Command(name = "unmute", description = "Unmute a user", serverOnly = true, permission = Permission.MODERATE_MEMBERS)
     public void unmute(CommandContext ctx, @Required Member member, @Required String reason) {
         ModerationManager.unmute(member, reason, ctx.getMember().getUser().getAsTag());
         ctx.reply("Unmuted " + member.getUser().getAsTag() + " for `" + reason + "`");

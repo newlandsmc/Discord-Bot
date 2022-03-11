@@ -34,7 +34,7 @@ public class BanCommand {
     @Command(name = "unban", description = "Unbans a user from the server.", serverOnly = true, permission = Permission.BAN_MEMBERS)
     public void unban(CommandContext ctx, @Required String user, @Required String reason) {
         RestAction<User> target = SVDiscord.getJda().retrieveUserById(user);
-        target.queue(u ->{
+        target.queue(u -> {
             if (u == null) {
                 ctx.reply("Could not find user `" + user + "`");
                 return;

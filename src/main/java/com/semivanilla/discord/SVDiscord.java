@@ -7,6 +7,7 @@ import com.semivanilla.discord.listener.MainListener;
 import com.semivanilla.discord.manager.ModerationManager;
 import com.semivanilla.discord.manager.RegexFilterManager;
 import com.semivanilla.discord.manager.RoleManager;
+import com.semivanilla.discord.manager.TicketManager;
 import com.semivanilla.discord.util.EnvConfig;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,12 +48,15 @@ public class SVDiscord {
             RegexFilterManager.reload();
             ModerationManager.init();
             RoleManager.init(jda);
+            TicketManager.init();
             System.out.println("SVMC Bot Successfully connected to " + jda.getSelfUser().getAsTag() + " (" + jda.getSelfUser().getIdLong() + ") " + new Date());
             System.out.println("Registering commands with discord, this may take a while...");
             enabled = true;
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 System.out.println("Saving Data...");
                 ModerationManager.disable();
+                TicketManager.disable();
+
                 setEnabled(false);
             }));
             new Thread("Console Thread") { // to gracefully shutdown if using intellij
@@ -66,8 +70,7 @@ public class SVDiscord {
                         }
                     }
                 }
-            };
-            //.start();
+            }.start();
             //command.registerCommandsInPackage("com.semivanilla.discord.commands");
         } catch (Exception e) {
             e.printStackTrace();
