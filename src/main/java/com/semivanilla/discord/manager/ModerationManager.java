@@ -19,11 +19,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ModerationManager {
+    private static final File FILE = new File("bans.json");
     @Getter
     private static MessageChannel auditLogChannel;
     @Getter
     private static HashMap<String, String> bans = new HashMap<>();
-    private static final File FILE = new File("bans.json");
 
     @SneakyThrows
     public static void init() {
@@ -54,7 +54,7 @@ public class ModerationManager {
                                 iterator.remove();
                                 SVDiscord.getJda().getGuildById(guildId).unban(userId).queue((c) -> {
                                     System.out.println("Successfully unbanned " + userId);
-                                    SVDiscord.getJda().retrieveUserById(userId).queue(user ->{
+                                    SVDiscord.getJda().retrieveUserById(userId).queue(user -> {
                                         String username;
                                         if (user == null) {
                                             username = "<@" + userId + ">";

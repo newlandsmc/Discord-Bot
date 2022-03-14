@@ -5,15 +5,13 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 
 @RequiredArgsConstructor
 public class Transcript {
     private final TextChannel channel;
 
-    private StringBuilder sb = new StringBuilder();
+    private final StringBuilder sb = new StringBuilder();
 
     public CompletableFuture<ByteArrayInputStream> start() {
         CompletableFuture<ByteArrayInputStream> future = new CompletableFuture<>();

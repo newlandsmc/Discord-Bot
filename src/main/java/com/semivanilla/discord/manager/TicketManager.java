@@ -28,15 +28,12 @@ import java.util.Objects;
 public class TicketManager {
     private static final File CONFIG_FILE = new File("ticket_config.json"), TICKETS_FILE = new File("tickets"), TICKETS_MESSAGE_FILE = new File("tickets_message");
     @Getter
-    private static String supportChannel, supportCategory, guildId;
-
-    @Getter
     private static final List<TicketConfig> configs = new ArrayList<>();
-
+    public static int tickets = 0;
+    @Getter
+    private static String supportChannel, supportCategory, guildId;
     @Getter
     private static String ticketsMessage = null;
-
-    public static int tickets = 0;
 
     public static void init() {
         if (!TICKETS_FILE.exists()) {
@@ -117,13 +114,13 @@ public class TicketManager {
     public static Pair<EmbedBuilder, SelectMenu.Builder> getEmbed() {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setDescription("Select an option below to open a ticket!\n")
-                .addField("\u2753 Help","Request support.",false)
-                .addField("\uD83D\uDC1B Bug","Report an issue.\n" +
-                        "Please check <#953014350132678706> first!",false)
-                .addField("\uD83D\uDCA1 Suggestion","Share an idea.\n" +
-                        "Please check <#953014425969889350> first!\n",false)
+                .addField("\u2753 Help", "Request support.", false)
+                .addField("\uD83D\uDC1B Bug", "Report an issue.\n" +
+                        "Please check <#953014350132678706> first!", false)
+                .addField("\uD83D\uDCA1 Suggestion", "Share an idea.\n" +
+                        "Please check <#953014425969889350> first!\n", false)
                 .addField("Please, provide as much detail in your ticket as possible!",
-                        "This helps us help you faster.",false).setColor(new Color(41, 43, 47))
+                        "This helps us help you faster.", false).setColor(new Color(41, 43, 47))
                 .setTitle("Support");
         SelectMenu.Builder b = SelectMenu.create("ticket:create");
         for (TicketConfig config : configs) {
