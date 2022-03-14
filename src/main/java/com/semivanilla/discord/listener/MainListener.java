@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.events.guild.GuildUnbanEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,6 +42,12 @@ public class MainListener extends ListenerAdapter {
                 TicketManager.sendMessage();
             }
         }
+        RegexFilterManager.process(event.getMessage(), event.getMember());
+    }
+
+    @Override
+    public void onMessageUpdate(@NotNull MessageUpdateEvent event) {
+        super.onMessageUpdate(event);
         RegexFilterManager.process(event.getMessage(), event.getMember());
     }
 

@@ -28,7 +28,7 @@ import java.util.List;
 public class RoleManager extends ListenerAdapter {
     private static final File ROLE_CONFIG = new File("roles.json"),
             ROLE_MESSAGE = new File("rolesmessage");
-    private static final ArrayList<RoleInfo> roles = new ArrayList<>();
+    private static ArrayList<RoleInfo> roles = new ArrayList<>();
     private static TextChannel channel;
     private static String messageId;
 
@@ -37,10 +37,25 @@ public class RoleManager extends ListenerAdapter {
         reload();
     }
 
+    @Override
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        super.onButtonInteraction(event);
+        if (event.getMessage().getId().equals(messageId)) {
+            String id = event.getButton().getId();
+            if (id != null && id.startsWith("role:")) {
+                String roleId = id.substring(5);
+                RoleInfo role = roles.stream().filter(r -> r.getRoleId().equals(roleId)).findFirst().orElse(null);
+                if (role != null) {
+                    role.toggle(event.getMember(), event);
+                }
+            }
+        }
+    }
+
     public static void sendMessage() {
         EmbedBuilder builder = new EmbedBuilder();
         builder.setTitle("Roles");
-        builder.setColor(new Color(41, 43, 47));
+        builder.setColor(new Color(54,57,63));
         builder.setDescription("Click on the role to assign it to yourself!");
         List<ItemComponent> components = new ArrayList<>();
         for (RoleInfo role : roles) {
@@ -97,21 +112,6 @@ public class RoleManager extends ListenerAdapter {
 
         if (ROLE_MESSAGE.exists()) {
             messageId = new String(Files.readAllBytes(ROLE_MESSAGE.toPath()));
-        }
-    }
-
-    @Override
-    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
-        super.onButtonInteraction(event);
-        if (event.getMessage().getId().equals(messageId)) {
-            String id = event.getButton().getId();
-            if (id != null && id.startsWith("role:")) {
-                String roleId = id.substring(5);
-                RoleInfo role = roles.stream().filter(r -> r.getRoleId().equals(roleId)).findFirst().orElse(null);
-                if (role != null) {
-                    role.toggle(event.getMember(), event);
-                }
-            }
         }
     }
 }
