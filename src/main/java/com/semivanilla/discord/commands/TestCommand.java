@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
 public class TestCommand {
-    @Command(name = "test", description = "Test Command 1", serverOnly = true, botOwnerOnly = true)
+    @Command(name = "test", description = "Test Command 1", botOwnerOnly = true)
     public CommandResult test(@Sender Member member, MessageChannel channel, CommandContext ctx, boolean test) {
         System.out.println("Test Command 0");
         ctx.reply("Working...");

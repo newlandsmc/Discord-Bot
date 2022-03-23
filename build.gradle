@@ -12,9 +12,7 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
-    implementation 'net.badbird5907:JDACommand:slash-commands-dev-0.11' //https://github.com/Badbird-5907/JDACommand/tree/Slash-Commands mvn clean install
+    implementation 'net.badbird5907:JDACommand:4.0.0-REL' //https://github.com/Badbird-5907/JDACommand/ mvn clean install
     implementation("net.dv8tion:JDA:5.0.0-alpha.9")
 
     compileOnly 'org.projectlombok:lombok:1.18.22'

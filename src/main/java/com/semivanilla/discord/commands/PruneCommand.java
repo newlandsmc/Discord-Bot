@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import java.awt.*;
 
 public class PruneCommand {
-    @Command(name = "prune", aliases = "purge", permission = Permission.MANAGE_SERVER, description = "Prune messages", serverOnly = true)
+    @Command(name = "prune", aliases = "purge", permission = Permission.MANAGE_SERVER, description = "Prune messages")
     public void prune(CommandContext ctx, @Required int amount) {
         EmbedBuilder eb = new EmbedBuilder();
         eb.setColor(Color.RED)

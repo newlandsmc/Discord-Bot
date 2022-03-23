@@ -9,7 +9,7 @@ import net.badbird5907.jdacommand.context.CommandContext;
 import net.dv8tion.jda.api.Permission;
 
 public class ReloadCommand {
-    @Command(name = "reload", description = "Reload Bot", serverOnly = true, permission = Permission.ADMINISTRATOR)
+    @Command(name = "reload", description = "Reload Bot", permission = Permission.ADMINISTRATOR)
     public CommandResult reloadFilter(CommandContext ctx) {
         ctx.reply("Reloading...");
         long start = System.currentTimeMillis();

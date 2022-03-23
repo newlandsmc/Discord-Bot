@@ -13,13 +13,13 @@ import net.dv8tion.jda.api.requests.RestAction;
 import java.time.Duration;
 
 public class BanCommand {
-    @Command(name = "ban", description = "Bans a user from the server.", serverOnly = true, permission = Permission.BAN_MEMBERS)
+    @Command(name = "ban", description = "Bans a user from the server.", permission = Permission.BAN_MEMBERS)
     public void ban(CommandContext ctx, @Required Member member, @Required String reason, boolean delMessages, boolean silent) {
         ModerationManager.ban(member, reason, ctx.getMember().getUser().getAsTag(), delMessages);
         ctx.reply("Banned " + member.getUser().getAsTag() + " for `" + reason + "`");
     }
 
-    @Command(name = "tempban", description = "Temporarily bans a user from the server.", serverOnly = true, permission = Permission.BAN_MEMBERS)
+    @Command(name = "tempban", description = "Temporarily bans a user from the server.", permission = Permission.BAN_MEMBERS)
     public void tempban(CommandContext ctx, @Required Member member, @Required String reason, boolean delMessages, int days, int hours, int minutes) {
         if ((days == 0 && hours == 0 && minutes == 0) || (days == -1 && hours == -1 && minutes == -1)) {
             ctx.reply("You must specify a time.");
@@ -31,7 +31,7 @@ public class BanCommand {
         ctx.reply("Banned " + member.getUser().getAsTag() + " for `" + reason + "` duration: " + ModerationManager.humanReadableFormat(duration));
     }
 
-    @Command(name = "unban", description = "Unbans a user from the server.", serverOnly = true, permission = Permission.BAN_MEMBERS)
+    @Command(name = "unban", description = "Unbans a user from the server.", permission = Permission.BAN_MEMBERS)
     public void unban(CommandContext ctx, @Required String user, @Required String reason) {
         RestAction<User> target = SVDiscord.getJda().retrieveUserById(user);
         target.queue(u -> {

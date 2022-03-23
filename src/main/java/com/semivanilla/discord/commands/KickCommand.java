@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 
 public class KickCommand {
-    @Command(name = "kick", description = "Kick a user from the server", serverOnly = true, permission = Permission.KICK_MEMBERS)
+    @Command(name = "kick", description = "Kick a user from the server", permission = Permission.KICK_MEMBERS)
     public void kick(CommandContext ctx, @Required Member member, @Required String reason) {
         ModerationManager.kick(member, reason, ctx.getMember().getUser().getAsTag());
         ctx.reply("Kicked " + member.getUser().getAsTag() + " for `" + reason + "`");
