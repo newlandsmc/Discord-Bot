@@ -1,9 +1,11 @@
 package com.semivanilla.discord.manager;
 
 import com.semivanilla.discord.SVDiscord;
+import com.semivanilla.discord.object.TimerEvent;
 import com.semivanilla.discord.util.EnvConfig;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import net.badbird5907.lightning.annotation.EventHandler;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
 
@@ -32,52 +34,46 @@ public class ModerationManager {
             bans = SVDiscord.gson.fromJson(json, HashMap.class);
         }
         auditLogChannel = SVDiscord.getJda().getTextChannelById(EnvConfig.getConfigs().get("audit-log-channel"));
+    }
 
-        new Thread("Unban Thread") {
-            @Override
-            public void run() {
-                while (SVDiscord.isEnabled()) {
-                    try {
-                        Thread.sleep(1000);
-                        Iterator<Map.Entry<String, String>> iterator = bans.entrySet().iterator();
-                        while (iterator.hasNext()) {
-                            Map.Entry<String, String> entry = iterator.next();
-                            String key = entry.getKey();
-                            String value = entry.getValue();
-                            long time = Long.parseLong(value);
-                            if (time < System.currentTimeMillis()) {
-                                String[] a = key.split("\\|");
-                                String guildId = a[0];
-                                String userId = a[1];
-                                System.out.println("Unbanning " + userId);
-                                //bans.remove(key);
-                                iterator.remove();
-                                Guild guild = SVDiscord.getJda().getGuildById(guildId);
-                                if (guild == null) {
-                                    System.err.print("Could not find guild " + guildId + " to unban " + userId);
-                                    continue;
-                                }
-                                guild.unban(userId).queue((c) -> {
-                                    System.out.println("Successfully unbanned " + userId);
-                                    SVDiscord.getJda().retrieveUserById(userId).queue(user -> {
-                                        String username;
-                                        if (user == null) {
-                                            username = "<@" + userId + ">";
-                                        } else username = user.getAsTag();
-                                        auditLog("Unban", null, "Ban Expired\n\n**User**\n" + username, "", "");
-                                    }, e -> error(e, userId, "Unban"));
-                                }, e -> {
-                                    System.err.println("Failed to unban " + userId + "\n" + e.getMessage());
-                                    error(e, "<@" + userId + "> (" + userId + ")", "Unban");
-                                });
-                            }
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+    @EventHandler
+    public static void tick(TimerEvent event) {
+        checkBans();
+    }
+    private static void checkBans() {
+        Iterator<Map.Entry<String, String>> iterator = bans.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> entry = iterator.next();
+            String key = entry.getKey();
+            String value = entry.getValue();
+            long time = Long.parseLong(value);
+            if (time < System.currentTimeMillis()) {
+                String[] a = key.split("\\|");
+                String guildId = a[0];
+                String userId = a[1];
+                System.out.println("Unbanning " + userId);
+                //bans.remove(key);
+                iterator.remove();
+                Guild guild = SVDiscord.getJda().getGuildById(guildId);
+                if (guild == null) {
+                    System.err.print("Could not find guild " + guildId + " to unban " + userId);
+                    continue;
                 }
+                guild.unban(userId).queue((c) -> {
+                    System.out.println("Successfully unbanned " + userId);
+                    SVDiscord.getJda().retrieveUserById(userId).queue(user -> {
+                        String username;
+                        if (user == null) {
+                            username = "<@" + userId + ">";
+                        } else username = user.getAsTag();
+                        auditLog("Unban", null, "Ban Expired\n\n**User**\n" + username, "", "");
+                    }, e -> error(e, userId, "Unban"));
+                }, e -> {
+                    System.err.println("Failed to unban " + userId + "\n" + e.getMessage());
+                    error(e, "<@" + userId + "> (" + userId + ")", "Unban");
+                });
             }
-        }.start();
+        }
     }
 
     @SneakyThrows

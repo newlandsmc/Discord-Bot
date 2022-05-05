@@ -4,14 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.semivanilla.discord.commands.*;
 import com.semivanilla.discord.listener.MainListener;
-import com.semivanilla.discord.manager.ModerationManager;
-import com.semivanilla.discord.manager.RegexFilterManager;
-import com.semivanilla.discord.manager.RoleManager;
-import com.semivanilla.discord.manager.TicketManager;
+import com.semivanilla.discord.manager.*;
+import com.semivanilla.discord.object.TimerEvent;
 import com.semivanilla.discord.util.EnvConfig;
 import lombok.Getter;
 import lombok.Setter;
 import net.badbird5907.jdacommand.JDACommand;
+import net.badbird5907.lightning.EventBus;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -29,6 +28,8 @@ public class SVDiscord {
     @Getter
     private static JDA jda;
 
+    @Getter
+    private static EventBus eventBus;
     public static void main(String[] args) {
         String token = new EnvConfig().getConfigs().get("token");
         try {
@@ -48,10 +49,16 @@ public class SVDiscord {
 
             enabled = true;
 
+            eventBus = new EventBus();
+
             RegexFilterManager.reload();
             ModerationManager.init();
             RoleManager.init(jda);
             TicketManager.init();
+
+            eventBus.register(ModerationManager.class);
+            eventBus.register(MarketManager.class);
+
             System.out.println("SVMC Bot Successfully connected to " + jda.getSelfUser().getAsTag() + " (" + jda.getSelfUser().getIdLong() + ") " + new Date());
             System.out.println("Registering commands with discord, this may take a while...");
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
@@ -61,6 +68,19 @@ public class SVDiscord {
 
                 setEnabled(false);
             }));
+            new Thread("Timer Thread") {
+                @Override
+                public void run() {
+                    while (SVDiscord.isEnabled()) {
+                        try {
+                            Thread.sleep(1000);
+                            eventBus.post(new TimerEvent());
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }.start();
             new Thread("Console Thread") { // to gracefully shutdown if using intellij
                 @Override
                 public void run() {
