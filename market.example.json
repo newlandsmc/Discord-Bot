@@ -1,0 +1,8 @@
+{
+  "channels": [
+    "<channel id>"
+  ],
+  "pattern": "(oOooBannedWord|oOoObanned2)",
+  "delete-timer": "P2D", //parsed from https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html#parse-java.lang.CharSequence-
+  "delete-if-no-photo": true
+}
