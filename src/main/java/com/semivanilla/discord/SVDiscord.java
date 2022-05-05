@@ -45,13 +45,15 @@ public class SVDiscord {
             command.registerCommand(new KickCommand());
             command.registerCommand(new MuteCommand());
             command.registerCommand(new PruneCommand());
+
+            enabled = true;
+
             RegexFilterManager.reload();
             ModerationManager.init();
             RoleManager.init(jda);
             TicketManager.init();
             System.out.println("SVMC Bot Successfully connected to " + jda.getSelfUser().getAsTag() + " (" + jda.getSelfUser().getIdLong() + ") " + new Date());
             System.out.println("Registering commands with discord, this may take a while...");
-            enabled = true;
             Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                 System.out.println("Saving Data...");
                 ModerationManager.disable();

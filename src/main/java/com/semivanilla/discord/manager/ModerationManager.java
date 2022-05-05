@@ -49,10 +49,15 @@ public class ModerationManager {
                                 String[] a = key.split("\\|");
                                 String guildId = a[0];
                                 String userId = a[1];
-                                System.out.println("Unbanning " + guildId);
+                                System.out.println("Unbanning " + userId);
                                 //bans.remove(key);
                                 iterator.remove();
-                                SVDiscord.getJda().getGuildById(guildId).unban(userId).queue((c) -> {
+                                Guild guild = SVDiscord.getJda().getGuildById(guildId);
+                                if (guild == null) {
+                                    System.err.print("Could not find guild " + guildId + " to unban " + userId);
+                                    continue;
+                                }
+                                guild.unban(userId).queue((c) -> {
                                     System.out.println("Successfully unbanned " + userId);
                                     SVDiscord.getJda().retrieveUserById(userId).queue(user -> {
                                         String username;

@@ -2,6 +2,7 @@ package com.semivanilla.discord.commands;
 
 import com.semivanilla.discord.SVDiscord;
 import com.semivanilla.discord.manager.ModerationManager;
+import com.semivanilla.discord.util.DateUtils;
 import net.badbird5907.jdacommand.annotation.Command;
 import net.badbird5907.jdacommand.annotation.Required;
 import net.badbird5907.jdacommand.context.CommandContext;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.requests.RestAction;
 
 import java.time.Duration;
+import java.util.Date;
 
 public class BanCommand {
     @Command(name = "ban", description = "Bans a user from the server.", permission = Permission.BAN_MEMBERS)
@@ -20,15 +22,15 @@ public class BanCommand {
     }
 
     @Command(name = "tempban", description = "Temporarily bans a user from the server.", permission = Permission.BAN_MEMBERS)
-    public void tempban(CommandContext ctx, @Required Member member, @Required String reason, boolean delMessages, int days, int hours, int minutes) {
-        if ((days == 0 && hours == 0 && minutes == 0) || (days == -1 && hours == -1 && minutes == -1)) {
-            ctx.reply("You must specify a time.");
+    public void tempban(CommandContext ctx, @Required Member member, @Required String reason, @Required String duration, boolean delMessages) {
+        long t = DateUtils.parseTime(duration);
+        if (t == -1) {
+            ctx.reply("Invalid time duration \"`" + duration + "`\"!\nExpected format `XdYhZm` eg: `1d`");
             return;
         }
-        Duration duration = Duration.ofDays(days == -1 ? 0 : days).plusHours(hours == -1 ? 0 : hours)
-                .plusMinutes(minutes == -1 ? 0 : minutes);
-        ModerationManager.ban(member, reason, duration, ctx.getMember().getUser().getAsTag(), delMessages);
-        ctx.reply("Banned " + member.getUser().getAsTag() + " for `" + reason + "` duration: " + ModerationManager.humanReadableFormat(duration));
+        Duration durationD = Duration.ofMillis(t);
+        ModerationManager.ban(member, reason, durationD, ctx.getMember().getUser().getAsTag(), delMessages);
+        ctx.reply("Banned " + member.getUser().getAsTag() + " for `" + reason + "` duration: " + ModerationManager.humanReadableFormat(durationD) + " Unbanned on: " + new Date(System.currentTimeMillis() + t));
     }
 
     @Command(name = "unban", description = "Unbans a user from the server.", permission = Permission.BAN_MEMBERS)
