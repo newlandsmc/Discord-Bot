@@ -1,10 +1,7 @@
 package com.semivanilla.discord.listener;
 
 import com.semivanilla.discord.SVDiscord;
-import com.semivanilla.discord.manager.ModerationManager;
-import com.semivanilla.discord.manager.RegexFilterManager;
-import com.semivanilla.discord.manager.RoleManager;
-import com.semivanilla.discord.manager.TicketManager;
+import com.semivanilla.discord.manager.*;
 import com.semivanilla.discord.object.TicketConfig;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.ChannelType;
@@ -13,6 +10,7 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.guild.GuildUnbanEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
+import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -32,6 +30,9 @@ public class MainListener extends ListenerAdapter {
         super.onMessageReceived(event);
         //check if private message
         if (event.getChannel().getType() == ChannelType.PRIVATE) {
+            return;
+        }
+        if (MarketManager.onMessage(event)) {
             return;
         }
         if (event.getMessage().getContentDisplay().startsWith(">")) {
@@ -108,5 +109,10 @@ public class MainListener extends ListenerAdapter {
         if (s.startsWith("ticket:")) {
             TicketManager.onSelectMenu(event);
         }
+    }
+
+    @Override
+    public void onMessageDelete(@NotNull MessageDeleteEvent event) {
+        MarketManager.onDelete(event);
     }
 }

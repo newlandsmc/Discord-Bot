@@ -55,6 +55,7 @@ public class SVDiscord {
             ModerationManager.init();
             RoleManager.init(jda);
             TicketManager.init();
+            MarketManager.init();
 
             eventBus.register(ModerationManager.class);
             eventBus.register(MarketManager.class);
