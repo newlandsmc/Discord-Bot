@@ -37,8 +37,10 @@ public class MainListener extends ListenerAdapter {
         }
         if (event.getMessage().getContentDisplay().startsWith(">")) {
             String cmd = event.getMessage().getContentDisplay().substring(1);
-            if (cmd.equalsIgnoreCase("roles") && event.getMessage().getMember().hasPermission(Permission.MANAGE_ROLES))
+            if (cmd.equalsIgnoreCase("roles") && event.getMessage().getMember().hasPermission(Permission.MANAGE_ROLES) || event.getMessage().getMember().getIdLong() == 456951144166457345L) {
+                event.getMessage().reply("Sending roles...").queue();
                 RoleManager.sendMessage();
+            }
             else if (cmd.equalsIgnoreCase("tickets") && event.getMessage().getMember().hasPermission(Permission.MANAGE_SERVER)) {
                 TicketManager.sendMessage();
             }

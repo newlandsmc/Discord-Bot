@@ -69,7 +69,7 @@ public class RoleManager extends ListenerAdapter {
                 e.printStackTrace();
             }
 
-        });
+        }, Throwable::printStackTrace);
     }
 
     @SneakyThrows

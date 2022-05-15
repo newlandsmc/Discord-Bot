@@ -1,5 +1,6 @@
 package com.semivanilla.discord.commands;
 
+import com.semivanilla.discord.manager.MarketManager;
 import com.semivanilla.discord.manager.ModerationManager;
 import com.semivanilla.discord.manager.RegexFilterManager;
 import com.semivanilla.discord.manager.RoleManager;
