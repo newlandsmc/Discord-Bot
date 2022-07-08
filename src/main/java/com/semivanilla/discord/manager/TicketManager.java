@@ -45,6 +45,12 @@ public class TicketManager {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else {
+            try {
+                tickets = Integer.parseInt(Files.readAllLines(TICKETS_FILE.toPath()).get(0));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         if (TICKETS_MESSAGE_FILE.exists()) {
             try {
