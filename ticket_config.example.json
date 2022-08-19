@@ -2,6 +2,7 @@
   "support-channel": "952982520847273996",
   "support-category": "952993943677714542",
   "guild-id": "952331093049245756",
+  "maxTickets": 1,
   "tickettypes": [
     {
       "id": "help",

@@ -149,11 +149,30 @@ public class TicketManager {
             if (selection[0].equals("ticket") && selection[1].equals("open")) {
                 String id = selection[2];
                 System.out.println("[select] " + id);
-                getConfigById(id).open(event.getMember());
-                event.reply("Ticket opened!").setEphemeral(true).queue();
-                update();
+                TicketOpenResult result = getConfigById(id).open(event.getMember());
+                switch (result) {
+                    case SUCCESS -> {
+                        event.reply("Ticket opened!").setEphemeral(true).queue();
+                        update();
+                        break;
+                    }
+                    case TOO_MANY_TICKETS -> {
+                        event.reply("You have too many tickets open!").setEphemeral(true).queue();
+                        break;
+                    }
+                    case ERROR -> {
+                        event.reply("An error occurred while trying to open this ticket!").setEphemeral(true).queue();
+                        break;
+                    }
+                }
             }
         }
+    }
+
+    public enum TicketOpenResult {
+        SUCCESS,
+        TOO_MANY_TICKETS,
+        ERROR
     }
 
     public static TicketConfig getConfigById(String id) {
