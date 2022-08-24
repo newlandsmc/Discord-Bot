@@ -28,7 +28,10 @@ public class Transcript {
 
     public void appendMessage(Message message) {
         sb.append("\n")
-                .append(message.getAuthor().getAsTag() + ": ")
-                .append(message.getContentDisplay());
+                .append(message.getAuthor().getAsTag() + ": ");
+        sb.append(message.getContentDisplay());
+        for (Message.Attachment attachment : message.getAttachments()) {
+            sb.append("\n").append(" - Attachment: " + attachment.getUrl());
+        }
     }
 }
