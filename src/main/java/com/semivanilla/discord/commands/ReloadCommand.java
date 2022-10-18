@@ -1,9 +1,6 @@
 package com.semivanilla.discord.commands;
 
-import com.semivanilla.discord.manager.MarketManager;
-import com.semivanilla.discord.manager.ModerationManager;
-import com.semivanilla.discord.manager.RegexFilterManager;
-import com.semivanilla.discord.manager.RoleManager;
+import com.semivanilla.discord.manager.*;
 import net.badbird5907.jdacommand.CommandResult;
 import net.badbird5907.jdacommand.annotation.Command;
 import net.badbird5907.jdacommand.context.CommandContext;
@@ -17,6 +14,7 @@ public class ReloadCommand {
         RegexFilterManager.reload();
         ModerationManager.save();
         RoleManager.reload();
+        TicketManager.init();
         long end = System.currentTimeMillis();
         ctx.setOriginal("Reloaded in " + (end - start) + "ms");
         return CommandResult.SUCCESS;

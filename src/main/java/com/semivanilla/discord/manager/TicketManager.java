@@ -9,9 +9,7 @@ import com.semivanilla.discord.object.TicketConfig;
 import lombok.Getter;
 import net.badbird5907.jdacommand.util.object.Pair;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emoji;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 
@@ -35,6 +33,8 @@ public class TicketManager {
     private static String supportChannel, supportCategory, guildId;
     @Getter
     private static String ticketsMessage = null;
+
+    private static int maxTickets = 1;
 
     public static void init() {
         if (!TICKETS_FILE.exists()) {
@@ -74,6 +74,7 @@ public class TicketManager {
             supportChannel = jsonObject.get("support-channel").getAsString();
             supportCategory = jsonObject.get("support-category").getAsString();
             guildId = jsonObject.get("guild-id").getAsString();
+            maxTickets = jsonObject.get("maxTickets").getAsInt();
             JsonArray jsonArray = jsonObject.get("tickettypes").getAsJsonArray();
             for (JsonElement element : jsonArray) {
                 JsonObject jsonObject1 = element.getAsJsonObject();
@@ -177,11 +178,24 @@ public class TicketManager {
                 String id = selection[2];
                 System.out.println("[select] " + id);
                 TicketConfig config = getConfigById(id);
-                TicketOpenResult result = config.open(event.getMember());
+                TicketOpenResult result;
+                Category cat = Objects.requireNonNull(SVDiscord.getJda().getGuildById(guildId).getCategoryById(supportCategory));
+                int totalOpenTickets = 0;
+                for (GuildChannel channel : cat.getChannels()) {
+                    if (channel instanceof TextChannel textChannel) {
+                        if (Objects.equals(textChannel.getTopic(), Objects.requireNonNull(event.getMember()).getId())) {
+                            totalOpenTickets++;
+                        }
+                    }
+                }
+                if (totalOpenTickets >= maxTickets) result = TicketManager.TicketOpenResult.TOO_MANY_TICKETS;
+                else result = config.open(event.getMember());
                 switch (result) {
                     case SUCCESS -> event.reply("Ticket opened!").setEphemeral(true).queue();
-                    case TOO_MANY_TICKETS -> event.reply("You have too many tickets open! (Max " + config.getMaxTickets() + ")").setEphemeral(true).queue();
-                    case ERROR -> event.reply("An error occurred while trying to open this ticket!").setEphemeral(true).queue();
+                    case TOO_MANY_TICKETS ->
+                            event.reply("You have too many tickets open! (Max " + maxTickets + ")").setEphemeral(true).queue();
+                    case ERROR ->
+                            event.reply("An error occurred while trying to open this ticket!").setEphemeral(true).queue();
                 }
                 update();
             }

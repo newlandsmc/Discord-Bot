@@ -24,8 +24,6 @@ import java.util.Objects;
 @Getter
 public class TicketConfig {
     private String id, name, description, message, emoji, emojiID;
-    private int maxTickets = 1;
-
     public TicketManager.TicketOpenResult open(Member member) {
         String category = TicketManager.getSupportCategory();
         Guild guild = SVDiscord.getJda().getGuildById(TicketManager.getGuildId());
@@ -33,17 +31,6 @@ public class TicketConfig {
             Category cat = guild.getCategoryById(category);
             if (cat == null) {
                 return TicketManager.TicketOpenResult.ERROR;
-            }
-            int totalOpenTickets = 0;
-            for (GuildChannel channel : cat.getChannels()) {
-                if (channel instanceof TextChannel textChannel) {
-                    if (Objects.equals(textChannel.getTopic(), member.getId())) {
-                        totalOpenTickets++;
-                    }
-                }
-            }
-            if (totalOpenTickets >= maxTickets) {
-                return TicketManager.TicketOpenResult.TOO_MANY_TICKETS;
             }
             cat.createTextChannel(this.name + "-" + ++TicketManager.tickets/*member.getUser().getName()*/).queue(channel -> {
                 channel.getManager().setTopic(member.getId()).queue();
