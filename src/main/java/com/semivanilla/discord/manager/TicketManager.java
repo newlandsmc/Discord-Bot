@@ -10,6 +10,7 @@ import lombok.Getter;
 import net.badbird5907.jdacommand.util.object.Pair;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Emoji;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
@@ -107,14 +108,40 @@ public class TicketManager {
     }
 
     public static void update() {
-        TextChannel channel = SVDiscord.getJda().getGuildById(guildId).getTextChannelById(supportChannel);
+        update(ticketsMessage);
+    }
+
+    public static void update(String messageId) {
+        Guild guild = Objects.requireNonNull(SVDiscord.getJda().getGuildById(guildId));
+        TextChannel channel = guild.getTextChannelById(supportChannel);
+        if (channel == null) {
+            for (TextChannel textChannel : guild.getTextChannels()) {
+                if (textChannel.getName().equalsIgnoreCase("open-ticket")) {
+                    channel = textChannel;
+                    break;
+                }
+            }
+
+            if (channel == null) {
+                System.out.println("No channel found, cannot update ticket message");
+                return;
+            }
+        }
         Pair<EmbedBuilder, SelectMenu.Builder> pair = getEmbed();
-        channel.editMessageEmbedsById(ticketsMessage, pair.getValue0().build())
+        TextChannel finalChannel = channel;
+        channel.editMessageEmbedsById(messageId, pair.getValue0().build())
                 .setActionRow(
                         pair.getValue1().build()
-                ).queue(m -> {
-                    setTicketsMessage(m.getId());
-                });
+                ).queue(m -> setTicketsMessage(m.getId()),
+                        e -> {
+                            finalChannel.retrieveMessageById(finalChannel.getLatestMessageId()).queue(
+                                    message -> {
+                                        setTicketsMessage(message.getId());
+                                        update(message.getId());
+                                    },
+                                    err -> System.out.println("Failed to update ticket message")
+                            );
+                        });
     }
 
     public static Pair<EmbedBuilder, SelectMenu.Builder> getEmbed() {
@@ -149,22 +176,14 @@ public class TicketManager {
             if (selection[0].equals("ticket") && selection[1].equals("open")) {
                 String id = selection[2];
                 System.out.println("[select] " + id);
-                TicketOpenResult result = getConfigById(id).open(event.getMember());
+                TicketConfig config = getConfigById(id);
+                TicketOpenResult result = config.open(event.getMember());
                 switch (result) {
-                    case SUCCESS -> {
-                        event.reply("Ticket opened!").setEphemeral(true).queue();
-                        update();
-                        break;
-                    }
-                    case TOO_MANY_TICKETS -> {
-                        event.reply("You have too many tickets open!").setEphemeral(true).queue();
-                        break;
-                    }
-                    case ERROR -> {
-                        event.reply("An error occurred while trying to open this ticket!").setEphemeral(true).queue();
-                        break;
-                    }
+                    case SUCCESS -> event.reply("Ticket opened!").setEphemeral(true).queue();
+                    case TOO_MANY_TICKETS -> event.reply("You have too many tickets open! (Max " + config.getMaxTickets() + ")").setEphemeral(true).queue();
+                    case ERROR -> event.reply("An error occurred while trying to open this ticket!").setEphemeral(true).queue();
                 }
+                update();
             }
         }
     }
