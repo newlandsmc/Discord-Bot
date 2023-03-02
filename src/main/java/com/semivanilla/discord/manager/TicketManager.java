@@ -147,14 +147,14 @@ public class TicketManager {
 
     public static Pair<EmbedBuilder, SelectMenu.Builder> getEmbed() {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setDescription("Select an option below to open a ticket!\n")
-                .addField("\u2753 Help", "Request support.", false)
-                .addField("\uD83D\uDC1B Bug", "Report an issue.\n" +
-                        "Please check <#953014350132678706> first!", false)
+        builder.setDescription("Select an option below to open a ticket! This will generate a private Discord channel between you and the moderators/admins on here.\n")
+                .addField("Please, provide as much default in your ticket as possible!", "This helps us help you faster.\n", false)
+                .addField("Available ticket types:", "", false)
                 .addField("\uD83D\uDCA1 Suggestion", "Share an idea.\n" +
                         "Please check <#953014425969889350> first!\n", false)
-                .addField("Please, provide as much detail in your ticket as possible!",
-                        "This helps us help you faster.", false).setColor(new Color(41, 43, 47))
+                .addField("\uD83D\uDEDF Help", "Request support.", false)
+                .addField("\uD83E\uDEB2 Bug", "Report an issue.\n" +
+                        "Please check <#953014350132678706> first!", false)
                 .setTitle("Support");
         SelectMenu.Builder b = SelectMenu.create("ticket:create");
         for (TicketConfig config : configs) {
