@@ -22,6 +22,12 @@
       "name": "Suggestion",
       "description": "Suggestion",
       "message": "Hello %user%! Please describe your suggestion in detail!"
+    },
+    {
+      "id": "apply",
+      "name": "Apply",
+      "description": "Apply to a staff position.",
+      "message": "Hello %user%! ..."
     }
   ]
 }
