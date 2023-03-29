@@ -33,6 +33,8 @@ public class TicketManager {
     private static String supportChannel, supportCategory, guildId;
     @Getter
     private static String ticketsMessage = null;
+    @Getter
+    private static boolean applications = false;
 
     private static int maxTickets = 1;
 
@@ -75,6 +77,7 @@ public class TicketManager {
             supportCategory = jsonObject.get("support-category").getAsString();
             guildId = jsonObject.get("guild-id").getAsString();
             maxTickets = jsonObject.get("maxTickets").getAsInt();
+            applications = jsonObject.get("applications").getAsBoolean();
             JsonArray jsonArray = jsonObject.get("tickettypes").getAsJsonArray();
             for (JsonElement element : jsonArray) {
                 JsonObject jsonObject1 = element.getAsJsonObject();
@@ -156,15 +159,22 @@ public class TicketManager {
                 .addField("\uD83E\uDEB2 Bug", "Report an issue.\n" +
                         "Please check <#953014350132678706> first!", false)
                 .setTitle("Support");
+        if (applications) {
+            builder.addField("\uD83D\uDCDD Apply", "Apply for a staff position.", false);
+        }
         SelectMenu.Builder b = SelectMenu.create("ticket:create");
         for (TicketConfig config : configs) {
+            String id = config.getId();
+            if (id.equalsIgnoreCase("apply") && !applications) {
+                continue;
+            }
             Emoji emoji;
             if (config.getEmoji() != null)
                 emoji = Emoji.fromUnicode(config.getEmoji());
             else if (config.getEmojiID() != null)
                 emoji = Emoji.fromEmote(Objects.requireNonNull(SVDiscord.getJda().getGuildById(guildId).getEmoteById(config.getEmojiID())));
             else emoji = null;
-            b.addOption(config.getName(), "ticket:open:" + config.getId(), config.getDescription(), null);
+            b.addOption(config.getName(), "ticket:open:" + id, config.getDescription(), null);
         }
         return new Pair<>(builder, b);
     }
