@@ -33,6 +33,8 @@ public class TicketManager {
     private static String supportChannel, supportCategory, guildId;
     @Getter
     private static String ticketsMessage = null;
+    @Getter
+    private static boolean applications = false;
 
     private static int maxTickets = 1;
 
@@ -75,6 +77,7 @@ public class TicketManager {
             supportCategory = jsonObject.get("support-category").getAsString();
             guildId = jsonObject.get("guild-id").getAsString();
             maxTickets = jsonObject.get("maxTickets").getAsInt();
+            applications = jsonObject.get("applications").getAsBoolean();
             JsonArray jsonArray = jsonObject.get("tickettypes").getAsJsonArray();
             for (JsonElement element : jsonArray) {
                 JsonObject jsonObject1 = element.getAsJsonObject();
@@ -147,24 +150,31 @@ public class TicketManager {
 
     public static Pair<EmbedBuilder, SelectMenu.Builder> getEmbed() {
         EmbedBuilder builder = new EmbedBuilder();
-        builder.setDescription("Select an option below to open a ticket!\n")
-                .addField("\u2753 Help", "Request support.", false)
-                .addField("\uD83D\uDC1B Bug", "Report an issue.\n" +
-                        "Please check <#953014350132678706> first!", false)
+        builder.setDescription("Select an option below to open a ticket! This will generate a private Discord channel between you and the moderators/admins on here.\n")
+                .addField("Please, provide as much default in your ticket as possible!", "This helps us help you faster.\n", false)
+                .addField("Available ticket types:", "", false)
                 .addField("\uD83D\uDCA1 Suggestion", "Share an idea.\n" +
                         "Please check <#953014425969889350> first!\n", false)
-                .addField("Please, provide as much detail in your ticket as possible!",
-                        "This helps us help you faster.", false).setColor(new Color(41, 43, 47))
+                .addField("\uD83D\uDEDF Help", "Request support.", false)
+                .addField("\uD83E\uDEB2 Bug", "Report an issue.\n" +
+                        "Please check <#953014350132678706> first!", false)
                 .setTitle("Support");
+        if (applications) {
+            builder.addField("\uD83D\uDCDD Apply", "Apply for a staff position.", false);
+        }
         SelectMenu.Builder b = SelectMenu.create("ticket:create");
         for (TicketConfig config : configs) {
+            String id = config.getId();
+            if (id.equalsIgnoreCase("apply") && !applications) {
+                continue;
+            }
             Emoji emoji;
             if (config.getEmoji() != null)
                 emoji = Emoji.fromUnicode(config.getEmoji());
             else if (config.getEmojiID() != null)
                 emoji = Emoji.fromEmote(Objects.requireNonNull(SVDiscord.getJda().getGuildById(guildId).getEmoteById(config.getEmojiID())));
             else emoji = null;
-            b.addOption(config.getName(), "ticket:open:" + config.getId(), config.getDescription(), null);
+            b.addOption(config.getName(), "ticket:open:" + id, config.getDescription(), null);
         }
         return new Pair<>(builder, b);
     }

@@ -2,6 +2,7 @@
   "support-channel": "952982520847273996",
   "support-category": "952993943677714542",
   "guild-id": "952331093049245756",
+  "applications": false,
   "maxTickets": 1,
   "tickettypes": [
     {
@@ -21,6 +22,12 @@
       "name": "Suggestion",
       "description": "Suggestion",
       "message": "Hello %user%! Please describe your suggestion in detail!"
+    },
+    {
+      "id": "apply",
+      "name": "Apply",
+      "description": "Apply to a staff position.",
+      "message": "Hello %user%! ..."
     }
   ]
 }
