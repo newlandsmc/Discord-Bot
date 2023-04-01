@@ -126,6 +126,15 @@ public class ModerationManager {
             error(e, message.getMember(), "delete");
             e.printStackTrace();
         }
+        try {
+            message.getAuthor().openPrivateChannel().queue(channel -> channel.sendMessageEmbeds(new EmbedBuilder().setColor(Color.RED)
+                    .setTitle("Message Deleted")
+                    .setDescription("Your message was deleted in " + message.getChannel().getAsMention() + " for prohibited language.")
+                    .addField("Message", "```\n" + message.getContentDisplay() + "\n```", false)
+                    .build()).queue());
+        } catch (Exception e) {
+
+        }
     }
 
     public static void unmute(Member member, String reason, String mod) {
