@@ -18,7 +18,7 @@ public class RegexFilter {
     public RegexFilter(String pattern, List<ModerationAction> actions) {
         this.pattern = pattern;
         this.actions = actions;
-        this.regexPattern = Pattern.compile(pattern);
+        this.regexPattern = Pattern.compile(pattern.trim());
     }
 
     public void process(Message message, Member member) {
@@ -29,7 +29,7 @@ public class RegexFilter {
 
     public Pattern getRegexPattern() {
         if (regexPattern == null) {
-            this.regexPattern = Pattern.compile(pattern);
+            this.regexPattern = Pattern.compile(pattern.trim());
         }
         return regexPattern;
     }

@@ -189,9 +189,8 @@ public class TicketManager {
                     }
                 }
                 if (totalOpenTickets >= maxTickets) result = TicketManager.TicketOpenResult.TOO_MANY_TICKETS;
-                else result = config.open(event.getMember());
+                else result = config.open(event.getMember(), (channelId)-> event.reply("Ticket opened! (<#" + channelId + ">)").setEphemeral(true).queue());
                 switch (result) {
-                    case SUCCESS -> event.reply("Ticket opened!").setEphemeral(true).queue();
                     case TOO_MANY_TICKETS ->
                             event.reply("You have too many tickets open! (Max " + maxTickets + ")").setEphemeral(true).queue();
                     case ERROR ->

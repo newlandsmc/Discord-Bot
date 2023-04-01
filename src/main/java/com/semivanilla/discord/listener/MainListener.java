@@ -4,9 +4,8 @@ import com.semivanilla.discord.SVDiscord;
 import com.semivanilla.discord.manager.*;
 import com.semivanilla.discord.object.TicketConfig;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.guild.GuildBanEvent;
 import net.dv8tion.jda.api.events.guild.GuildUnbanEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
@@ -14,7 +13,12 @@ import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import org.jetbrains.annotations.NotNull;
+
+import java.awt.*;
+import java.util.concurrent.TimeUnit;
 
 public class MainListener extends ListenerAdapter {
     @Override
@@ -84,7 +88,7 @@ public class MainListener extends ListenerAdapter {
             String[] id = s.split(":");
             String action = id[1];
             switch (action.toLowerCase()) {
-                case "close":
+                case "close-confirm": {
                     String a = id[2];
                     String[] a1 = a.split("\\|");
                     String member = a1[0],
@@ -99,6 +103,24 @@ public class MainListener extends ListenerAdapter {
                         conf.close(user, event.getUser(), event.getTextChannel());
                     });
                     break;
+                }
+                case "close": {
+                    String a = id[2];
+                    String[] a1 = a.split("\\|");
+                    String member = a1[0],
+                            configId = a1[1];
+                    TicketConfig conf = TicketManager.getConfigById(configId);
+                    if (conf == null) {
+                        event.reply("Failed to close ticket: `Could not find ticket config with the id of " + configId + "`").setEphemeral(true).queue();
+                        break;
+                    }
+                    SVDiscord.getJda().retrieveUserById(member).queue(user -> {
+                        event.reply("Are you sure you want to close this ticket?\nClick the button below to confirm.").addActionRow(
+                                Button.of(ButtonStyle.PRIMARY, "ticket:close-confirm:" + member + "|" + configId, "Close", Emoji.fromUnicode("\uD83D\uDD12"))
+                        ).setEphemeral(true).queue();
+                    });
+                    break;
+                }
             }
         }
     }

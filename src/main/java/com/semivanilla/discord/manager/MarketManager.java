@@ -49,7 +49,7 @@ public class MarketManager {
             }
             duration = Duration.parse(jsonObject.get("delete-timer").getAsString());
             deleteIfNoPhoto = jsonObject.get("delete-if-no-photo").getAsBoolean();
-            pattern = Pattern.compile(jsonObject.get("pattern").getAsString());
+            pattern = Pattern.compile(jsonObject.get("pattern").getAsString().trim());
             enabled = true;
             lastSave = System.currentTimeMillis();
         } catch (IOException e) {

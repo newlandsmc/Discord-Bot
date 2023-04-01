@@ -17,6 +17,8 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import java.util.Date;
 import java.util.Scanner;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 public class SVDiscord {
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -30,6 +32,9 @@ public class SVDiscord {
 
     @Getter
     private static EventBus eventBus;
+
+    @Getter
+    private static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
     public static void main(String[] args) {
         String token = new EnvConfig().getConfigs().get("token");
         try {

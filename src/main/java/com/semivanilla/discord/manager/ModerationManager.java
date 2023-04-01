@@ -95,12 +95,12 @@ public class ModerationManager {
     }
 
     public static void ban(Member member, String reason, String mod, boolean delMessages) {
-        sendBannedMessage(member, reason, "Permanent", mod);
+        sendBannedMessage(member.getUser(), reason, "Permanent", mod);
         member.ban(delMessages ? 7 : 0, reason).queue();
     }
 
     public static void ban(Member member, String reason, Duration duration, String mod, boolean delMessages) {
-        sendBannedMessage(member, reason, humanReadableFormat(duration), mod);
+        sendBannedMessage(member.getUser(), reason, humanReadableFormat(duration), mod);
         bans.put(member.getGuild().getId() + "|" + member.getId(), (System.currentTimeMillis() + duration.toMillis()) + "");
         member.ban(delMessages ? 7 : 0, reason).queue();
         save();
@@ -156,10 +156,10 @@ public class ModerationManager {
         }
     }
 
-    public static void sendBannedMessage(Member member, String reason, String duration, String mod) {
-        auditLog("Ban", member.getUser(), reason, mod, duration);
+    public static void sendBannedMessage(User member, String reason, String duration, String mod) {
+        auditLog("Ban", member, reason, mod, duration);
         try {
-            member.getUser().openPrivateChannel().queue(channel -> channel.sendMessageEmbeds(new EmbedBuilder().setColor(Color.ORANGE)
+            member.openPrivateChannel().queue(channel -> channel.sendMessageEmbeds(new EmbedBuilder().setColor(Color.ORANGE)
                     .setTitle("Banned")
                     .setDescription("You have been banned from SemiVanilla-MC For:\n```" + reason + "```")
                     .addField("Duration", duration, false)

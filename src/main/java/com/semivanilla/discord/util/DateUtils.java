@@ -108,10 +108,12 @@ public class DateUtils {
         return time.toString().trim();
     }
 
+    private static final Pattern pattern = Pattern.compile("\\d+\\D+");
+
     public static long parseTime(String time) {
         long totalTime = 0L;
         boolean found = false;
-        Matcher matcher = Pattern.compile("\\d+\\D+").matcher(time);
+        Matcher matcher = pattern.matcher(time);
 
         while (matcher.find()) {
             String s = matcher.group();

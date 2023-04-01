@@ -19,12 +19,12 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Objects;
+import java.util.function.Consumer;
 
 @Getter
 public class TicketConfig {
     private String id, name, description, message, emoji, emojiID;
-    public TicketManager.TicketOpenResult open(Member member) {
+    public TicketManager.TicketOpenResult open(Member member, Consumer<String> channelIdConsumer) {
         String category = TicketManager.getSupportCategory();
         Guild guild = SVDiscord.getJda().getGuildById(TicketManager.getGuildId());
         if (category != null && guild != null) {
@@ -33,6 +33,7 @@ public class TicketConfig {
                 return TicketManager.TicketOpenResult.ERROR;
             }
             cat.createTextChannel(this.name + "-" + ++TicketManager.tickets/*member.getUser().getName()*/).queue(channel -> {
+                channelIdConsumer.accept(channel.getId());
                 channel.getManager().setTopic(member.getId()).queue();
                 channel.getManager().putMemberPermissionOverride(member.getIdLong(), Arrays.asList(Permission.VIEW_CHANNEL, Permission.MESSAGE_SEND), new ArrayList<>()).queue(a -> {
                     channel.sendMessage(this.message.replace("%user%", member.getAsMention())).setActionRow(
