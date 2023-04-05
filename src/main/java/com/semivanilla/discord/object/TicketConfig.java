@@ -5,6 +5,7 @@ import com.semivanilla.discord.manager.ModerationManager;
 import com.semivanilla.discord.manager.TicketManager;
 import com.semivanilla.discord.util.Transcript;
 import lombok.Getter;
+import lombok.Setter;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
@@ -24,6 +25,22 @@ import java.util.function.Consumer;
 @Getter
 public class TicketConfig {
     private String id, name, description, message, emoji, emojiID;
+
+    @Getter
+    @Setter
+    public static class EmbedConfig {
+        private String title, description, color, footer, footerIcon;
+        private FieldConfig[] fields;
+    }
+
+    @Getter
+    @Setter
+    public static class FieldConfig {
+        private String name, value;
+        private boolean inline;
+        private boolean applications;
+    }
+
     public TicketManager.TicketOpenResult open(Member member, Consumer<String> channelIdConsumer) {
         String category = TicketManager.getSupportCategory();
         Guild guild = SVDiscord.getJda().getGuildById(TicketManager.getGuildId());

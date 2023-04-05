@@ -157,7 +157,7 @@ public class ModerationManager {
         try {
             member.getUser().openPrivateChannel().queue(channel -> channel.sendMessageEmbeds(new EmbedBuilder().setColor(Color.ORANGE)
                     .setTitle("Timeout")
-                    .setDescription("You have been timed out from SemiVanilla-MC For:\n```" + reason + "```")
+                    .setDescription("You have been timed out from " + SVDiscord.getConfig().getName() + " For:\n```" + reason + "```")
                     .addField("Duration", duration, false)
                     .build()).queue());
         } catch (Exception e) {
@@ -170,7 +170,7 @@ public class ModerationManager {
         try {
             member.openPrivateChannel().queue(channel -> channel.sendMessageEmbeds(new EmbedBuilder().setColor(Color.ORANGE)
                     .setTitle("Banned")
-                    .setDescription("You have been banned from SemiVanilla-MC For:\n```" + reason + "```")
+                    .setDescription("You have been banned from " + SVDiscord.getConfig().getName() + " For:\n```" + reason + "```")
                     .addField("Duration", duration, false)
                     .build()).queue((c) -> {
             }, e -> {
@@ -185,7 +185,7 @@ public class ModerationManager {
         try {
             member.getUser().openPrivateChannel().queue(channel -> channel.sendMessageEmbeds(new EmbedBuilder().setColor(Color.ORANGE)
                     .setTitle("Kicked")
-                    .setDescription("You have been kicked from SemiVanilla-MC For:\n```" + reason + "```")
+                    .setDescription("You have been kicked from " + SVDiscord.getConfig().getName() + " For:\n```" + reason + "```")
                     .build()).queue((c) -> {
             }, e -> {
             }));

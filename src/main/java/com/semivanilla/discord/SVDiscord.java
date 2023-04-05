@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.semivanilla.discord.commands.*;
 import com.semivanilla.discord.listener.MainListener;
 import com.semivanilla.discord.manager.*;
+import com.semivanilla.discord.object.Config;
 import com.semivanilla.discord.object.TimerEvent;
 import com.semivanilla.discord.util.EnvConfig;
 import lombok.Getter;
@@ -15,6 +16,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
@@ -35,6 +38,9 @@ public class SVDiscord {
 
     @Getter
     private static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+
+    @Getter
+    private static Config config;
     public static void main(String[] args) {
         String token = new EnvConfig().getConfigs().get("token");
         try {
@@ -53,6 +59,9 @@ public class SVDiscord {
             command.registerCommand(new PruneCommand());
 
             enabled = true;
+
+            String data = new String(Files.readAllBytes(new File("config.json").toPath()));
+            config = gson.fromJson(data, Config.class);
 
             eventBus = new EventBus();
 

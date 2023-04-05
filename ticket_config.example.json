@@ -4,6 +4,44 @@
   "guild-id": "952331093049245756",
   "applications": false,
   "maxTickets": 1,
+  "embed": {
+    "title": "Support",
+    "description": "Select an option below to open a ticket! This will generate a private Discord channel between you and the moderators/admins on here.\n",
+    "fields": [
+      {
+        "name": "Please, provide as much default in your ticket as possible!",
+        "value": "This helps us help you faster.\n",
+        "inline": false
+      },
+      {
+        "name": "Available ticket types:",
+        "value": "",
+        "inline": false
+      },
+      {
+        "name": "\uD83D\uDCA1 Suggestion",
+        "value": "Share an idea.\nPlease check <#953014425969889350> first!\n",
+        "inline": false
+      },
+      {
+        "name": "\uD83D\uDEDF Help",
+        "value": "Request support.",
+        "inline": false
+      },
+      {
+        "name": "\uD83E\uDEB2 Bug",
+        "value": "Report an issue.\nPlease check <#953014350132678706> first!",
+        "inline": false
+      },
+      {
+        "name": "\uD83D\uDCDD Apply",
+        "value": "Apply for a staff position.",
+        "inline": false,
+        "applications": true
+      }
+    ],
+    "color": "#1e1f22"
+  },
   "tickettypes": [
     {
       "id": "help",

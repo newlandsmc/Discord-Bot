@@ -36,6 +36,9 @@ public class TicketManager {
     @Getter
     private static boolean applications = false;
 
+    @Getter
+    private static TicketConfig.EmbedConfig embedConfig = null;
+
     private static int maxTickets = 1;
 
     public static void init() {
@@ -78,6 +81,9 @@ public class TicketManager {
             guildId = jsonObject.get("guild-id").getAsString();
             maxTickets = jsonObject.get("maxTickets").getAsInt();
             applications = jsonObject.get("applications").getAsBoolean();
+            if (jsonObject.has("embed")) {
+                embedConfig = SVDiscord.gson.fromJson(jsonObject.get("embed"), TicketConfig.EmbedConfig.class);
+            }
             JsonArray jsonArray = jsonObject.get("tickettypes").getAsJsonArray();
             for (JsonElement element : jsonArray) {
                 JsonObject jsonObject1 = element.getAsJsonObject();
@@ -150,6 +156,7 @@ public class TicketManager {
 
     public static Pair<EmbedBuilder, SelectMenu.Builder> getEmbed() {
         EmbedBuilder builder = new EmbedBuilder();
+        /*
         builder.setDescription("Select an option below to open a ticket! This will generate a private Discord channel between you and the moderators/admins on here.\n")
                 .addField("Please, provide as much default in your ticket as possible!", "This helps us help you faster.\n", false)
                 .addField("Available ticket types:", "", false)
@@ -159,8 +166,21 @@ public class TicketManager {
                 .addField("\uD83E\uDEB2 Bug", "Report an issue.\n" +
                         "Please check <#953014350132678706> first!", false)
                 .setTitle("Support");
-        if (applications) {
-            builder.addField("\uD83D\uDCDD Apply", "Apply for a staff position.", false);
+         */
+        builder.setDescription(embedConfig.getDescription()).setTitle(embedConfig.getTitle());
+        if (embedConfig.getFooter() != null) {
+            if (embedConfig.getFooterIcon() != null) {
+                builder.setFooter(embedConfig.getFooter(), embedConfig.getFooterIcon());
+            } else {
+                builder.setFooter(embedConfig.getFooter());
+            }
+        }
+        if (embedConfig.getColor() != null) {
+            builder.setColor(Color.decode(embedConfig.getColor()));
+        }
+        for (TicketConfig.FieldConfig field : embedConfig.getFields()) {
+            if (field.isApplications() && !applications) continue;
+            builder.addField(field.getName(), field.getValue(), field.isInline());
         }
         SelectMenu.Builder b = SelectMenu.create("ticket:create");
         for (TicketConfig config : configs) {
@@ -168,12 +188,14 @@ public class TicketManager {
             if (id.equalsIgnoreCase("apply") && !applications) {
                 continue;
             }
+            /*
             Emoji emoji;
             if (config.getEmoji() != null)
                 emoji = Emoji.fromUnicode(config.getEmoji());
             else if (config.getEmojiID() != null)
                 emoji = Emoji.fromEmote(Objects.requireNonNull(SVDiscord.getJda().getGuildById(guildId).getEmoteById(config.getEmojiID())));
             else emoji = null;
+             */
             b.addOption(config.getName(), "ticket:open:" + id, config.getDescription(), null);
         }
         return new Pair<>(builder, b);
@@ -199,7 +221,8 @@ public class TicketManager {
                     }
                 }
                 if (totalOpenTickets >= maxTickets) result = TicketManager.TicketOpenResult.TOO_MANY_TICKETS;
-                else result = config.open(event.getMember(), (channelId)-> event.reply("Ticket opened! (<#" + channelId + ">)").setEphemeral(true).queue());
+                else
+                    result = config.open(event.getMember(), (channelId) -> event.reply("Ticket opened! (<#" + channelId + ">)").setEphemeral(true).queue());
                 switch (result) {
                     case TOO_MANY_TICKETS ->
                             event.reply("You have too many tickets open! (Max " + maxTickets + ")").setEphemeral(true).queue();
